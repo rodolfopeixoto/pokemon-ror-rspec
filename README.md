@@ -1,24 +1,18 @@
-# README
+# Ruby on Rails and TDD
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
 
-Things you may want to cover:
+### VCR
 
-* Ruby version
+#### URI dinâmica
 
-* System dependencies
+Deste modo, não estamos nos importando com o método HTTP e a URI da requisição. Apenas estamos enviando o mesmo body sempre, ou seja, a imagem.
+Assim conseguimos fazer com que nossos testes continuem passando, e não precisamos testar novamente o Paperclip no teste do controller. Somente precisamos verificar que ele não nos gera problemas devido a URIs não de- terminísticas.
 
-* Configuration
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```ruby
+describe PlayersController do
+  describe "POST ’create’",
+      vcr: { match_requests_on: [:body] } do
+  # ...
+end
+```
