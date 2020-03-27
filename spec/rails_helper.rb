@@ -20,4 +20,5 @@ RSpec.configure do |configure|
   configure.use_transactional_fixtures = true
   configure.infer_spec_type_from_file_location!
   configure.filter_rails_from_backtrace!
+  configure.include FactoryBot::Syntax::Methods
 end

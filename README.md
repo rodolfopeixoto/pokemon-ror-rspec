@@ -233,7 +233,8 @@ factory :pokeapi, class: String do
     info = { national_id: id_nacional, name: nome,
              attack: ataque, defense: defesa }
     JSON.generate(info)
-end end
+  end 
+end
 
 ```
 
@@ -283,5 +284,143 @@ RSpec.configure do |config|
   config.before(:suite) do
     FactoryGirl.lint
   end
+end
+```
+
+##### Ordem aleatória nos testes
+
+```
+config.order = "random"
+```
+
+ou no arquivo `.rspec` podemos adicionar
+
+```
+--order random
+```
+
+Execução do seed para debugger
+
+```
+rspec spec --seed 182
+```
+
+
+#### Utilizar timecop ou ActiveSupport::Testing::TimeHelpers
+
+A partir do Rails 4.1, foi criado o módulo ActiveSupport::Testing::TimeHelpers, que nos oferece méto- dos para viajarmos no tempo assim como com o timecop.
+Como estamos utilizando o RSpec, primeiro temos que incluir o módulo. Para isso, utilizamos o spec_helper.rb.
+ 
+```
+RSpec.configure do |config|
+# ...
+  config.include ActiveSupport::Testing::TimeHelpers
+end
+
+```
+
+Com o módulo inserido simplesmente trocamos de `Timecop.freeze` para `travel_to` e de `Timecop.return` para `travel_back`, e mantemos o mesmo comportamento do timecop. No entanto, agora não há necessidade de uma gem extra.
+
+```
+  before do
+    hoje = Time.zone.local(2010, 3, 3, 12) travel_to(hoje)
+  end
+  after do
+    travel_back
+  end
+```
+Assim como o Timecop.freeze, o travel_to também aceita um bloco, de forma que não é necessário usar o travel_back. No entanto, não se esqueça de sempre usar o travel_back se não estiver usando um bloco, como no nosso exemplo, para evitarmos o problema de testes quebradiços que vimos anteriormente.
+Mas e o timecop ainda faz sentido? Sim! Em projetos que não são Rails ou que não utilizem o ActiveSupport. A dica é: se tiver em uma app Rails, ou se seu projeto tiver o ActiveSupport, utilize o travel_to; nos demais casos utilize o timecop.
+
+
+#### SimpleCov
+
+```
+require ’simplecov’
+SimpleCov.start ’rails’
+```
+
+Por padrão, o SimpleCov é rodado todas as vezes que um teste é execu- tado, sempre exibindo este output durante o nosso TDD, o que é bastante chato, afinal não estamos preocupados com isso enquanto escrevemos nos- sos testes. Para isso, podemos definir que o SimpleCov será executado apenas se uma variável de ambiente estiver definida, vamos chamá-la de coverage e colocar o código do SimpleCov dentro de um if.
+```
+if ENV[’coverage’] == ’on’
+  require ’simplecov’
+  SimpleCov.start ’rails’ do
+    minimum_coverage 100
+  end
+end
+
+```
+Deste modo, ao rodarmos nossos testes, não teremos a saída do Sim- pleCov apenas se definirmos isso explicitamente utilizando $coverage=on rspec spec.
+
+
+#### Stub
+
+Vamos agora às dicas de quando utilizar stub.
+• Quando o resultado de um dos seus colaboradores não é determinís- tico;
+• Apenasemcolaboradores,nuncanoobjeto(osujeito),doseuteste;
+• Quandoocolaboradorfazumaoperaçãolenta,comoacessarumaAPI.
+
+```
+it ’é um valor aleatório’ do
+  allow(random).to receive(:rand).with(60..80).and_return(75)
+  pokemon = pokemon.new
+  expect(pokemon.ataque_critico).to eq(75)
+end
+```
+
+#### dublês
+
+
+Agora temos o nosso cenário montado. Temos o colaborador, que é o objeto, e o nosso sujeito, o CardPresenter, que consegue fazer sua as- serção. Vamos agora escrever a nossa classe CardPresenter.
+
+````
+
+it ’retorna um paragrafo por chave’ do
+  objeto = double(’Um objeto’)
+  to_presenter = { nome: ’Mauro’, idade: 24 }
+  allow(objeto).to receive(:to_presenter).
+    and_return(to_presenter)
+  card_presenter = CardPresenter.new(objeto)
+  expect(card_presenter.show).
+    to eq(%{<p>nome: Mauro</p><p>idade: 24</p>})
+  end
+end
+```
+
+
+
+```
+describe ’#show’ do
+  let(:objeto) do
+    double(’Um objeto’)
+end
+  subject(:card_presenter) do
+    CardPresenter.new(objeto)
+end
+  before do
+    to_presenter = { nome: ’Mauro’, idade: 24 }
+    allow(objeto).to receive(:to_presenter).
+      and_return(to_presenter)
+end
+  it ’retorna um paragrafo por chave’ do
+    expect(card_presenter.show).
+      to eq(%{<p>nome: Mauro</p><p>idade: 24</p>})
+  end
+end
+
+```
+
+
+Super doubles
+
+```
+context ’Pokemon’ do
+
+  let(:objeto) do
+    instance_double(Pokemon, to_presenter: {nome: ’Charizard’})
+  end
+  it ’retorna um paragrafo por chave’ do
+    expect(card_presenter.show).to eq(%{<p>nome: Charizard</p>})
+  end 
 end
 ```
