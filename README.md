@@ -268,6 +268,7 @@ pokemon = FactoryGirl.build_stubbed(:pokemon)
 
 ```
 
+
 Diferentemente do build, nosso objeto age como estivesse persistido, por isso, ao usarmos pokemon.persisted?,
 nosso resultado será true. Nosso objeto somente age como se estivesse persistido, pois se fizermos um Pokemon.count
 antes e depois do uso do build_stubbed obteremos o mesmo valor,
@@ -279,7 +280,7 @@ Com o build, realmente o objeto é salvo no banco de dados se usarmos #save!.
 
 No arquivo: `spec_helper.rb`
 
-```
+```ruby
 RSpec.configure do |config|
   config.before(:suite) do
     FactoryGirl.lint
@@ -289,19 +290,19 @@ end
 
 ##### Ordem aleatória nos testes
 
-```
+```ruby
 config.order = "random"
 ```
 
 ou no arquivo `.rspec` podemos adicionar
 
-```
+```ruby
 --order random
 ```
 
 Execução do seed para debugger
 
-```
+```ruby
 rspec spec --seed 182
 ```
 
@@ -311,7 +312,7 @@ rspec spec --seed 182
 A partir do Rails 4.1, foi criado o módulo ActiveSupport::Testing::TimeHelpers, que nos oferece méto- dos para viajarmos no tempo assim como com o timecop.
 Como estamos utilizando o RSpec, primeiro temos que incluir o módulo. Para isso, utilizamos o spec_helper.rb.
  
-```
+```ruby
 RSpec.configure do |config|
 # ...
   config.include ActiveSupport::Testing::TimeHelpers
@@ -321,7 +322,7 @@ end
 
 Com o módulo inserido simplesmente trocamos de `Timecop.freeze` para `travel_to` e de `Timecop.return` para `travel_back`, e mantemos o mesmo comportamento do timecop. No entanto, agora não há necessidade de uma gem extra.
 
-```
+```ruby
   before do
     hoje = Time.zone.local(2010, 3, 3, 12) travel_to(hoje)
   end
@@ -335,13 +336,14 @@ Mas e o timecop ainda faz sentido? Sim! Em projetos que não são Rails ou que
 
 #### SimpleCov
 
-```
+```ruby
 require ’simplecov’
 SimpleCov.start ’rails’
 ```
 
 Por padrão, o SimpleCov é rodado todas as vezes que um teste é execu- tado, sempre exibindo este output durante o nosso TDD, o que é bastante chato, afinal não estamos preocupados com isso enquanto escrevemos nos- sos testes. Para isso, podemos definir que o SimpleCov será executado apenas se uma variável de ambiente estiver definida, vamos chamá-la de coverage e colocar o código do SimpleCov dentro de um if.
-```
+
+```ruby
 if ENV[’coverage’] == ’on’
   require ’simplecov’
   SimpleCov.start ’rails’ do
@@ -360,7 +362,7 @@ Vamos agora às dicas de quando utilizar stub.
 • Apenasemcolaboradores,nuncanoobjeto(osujeito),doseuteste;
 • Quandoocolaboradorfazumaoperaçãolenta,comoacessarumaAPI.
 
-```
+```ruby
 it ’é um valor aleatório’ do
   allow(random).to receive(:rand).with(60..80).and_return(75)
   pokemon = pokemon.new
@@ -373,7 +375,7 @@ end
 
 Agora temos o nosso cenário montado. Temos o colaborador, que é o objeto, e o nosso sujeito, o CardPresenter, que consegue fazer sua as- serção. Vamos agora escrever a nossa classe CardPresenter.
 
-````
+```ruby
 
 it ’retorna um paragrafo por chave’ do
   objeto = double(’Um objeto’)
@@ -389,7 +391,7 @@ end
 
 
 
-```
+```ruby
 describe ’#show’ do
   let(:objeto) do
     double(’Um objeto’)
@@ -413,7 +415,7 @@ end
 
 Super doubles
 
-```
+```ruby
 context ’Pokemon’ do
 
   let(:objeto) do
@@ -424,3 +426,138 @@ context ’Pokemon’ do
   end 
 end
 ```
+
+
+#### Duplications with Shared Exemple
+
+Por con- venção, os shared examples são armazenados em spec/support/ e possuem o prefixo shared_examples_for_. Criaremos o nosso spec/support/shared_examples_for_validacao.rb.
+Para criar- mos um shared example, utilizaremos o método shared_examples, que recebe como primeiro parâmetro o nome do nosso shared example e um bloco com o conteúdo do exemplo compartilhado.
+
+```ruby
+shared_examples ’valida presenca de string’ do
+  describe ’#nome’ do
+    it ’possui erro quando está vazio’ do
+     pokemon = Pokemon.new
+     pokemon.valid?
+     expect(pokemon.errors[:nome]).
+        to include(’não pode ficar em branco’)
+    end
+    # ...
+  end 
+end
+```
+
+utilizamos o include_examples passando o nome do shared example.
+
+```ruby
+describe ’validações’ do
+  include_examples ’valida presenca de string’
+end
+```
+
+##### Shared examples dinâmicos
+O shared example aceita parâmetros, sendo assim, temos que passar como parâmetro a classe e um símbolo com o nome do campo do model cuja pre- sença queremos testar. Alteramos o nosso shared example para agora utili- zar o atributo que foi passado por parâmetro. Além disso, instanciamos uma classe de acordo com a que foi passada por parâmetro e assim realizamos nossa validação de presença.
+
+```ruby
+shared_examples ’valida presenca de string’ do |klass, attr|
+  describe "#{attr}" do
+    it ’possui erro quando está vazio’ do
+      instancia = klass.new
+      instancia.valid?
+      expect(instancia.errors[attr]).
+          to include(’não pode ficar em branco’)
+    end
+  end 
+end
+```
+
+ Depois de executarmos as valida- ções da nossa classe, verificamos se o atributo passado não possui nenhum erro.
+
+```ruby
+it ’não possui erro quando está preenchido’ do
+  params = {}
+  params[attr] = ’Charizard’
+  instancia = klass.new(params)
+  instancia.valid?
+  expect(instancia.errors[attr]).to be_empty
+end
+```
+
+
+definimos o nosso shared example de uma maneira dinâmica temos que alterar o nosso teste para passar os parâmetros corretos. Simples- mente passamos a nossa classe Pokemon e um símbolo :nome, que é o valor que queremos testar.
+
+```ruby
+describe ’validações’ do
+  include_examples ’valida presenca de string’, Pokemon, :nome
+end
+```
+
+
+#### Create Matchers RSpec
+
+o método failure_message, que recebe um bloco em que passamos o nosso sujeito e mostramos uma mensagem customizada.
+
+
+ to_not, porém, ficaria estranha a saída se ti- véssemos a mesma mensagem que definimos no failure_message, afinal estamos fazendo o oposto agora.
+Para definirmos a mensagem para quando estivermos utilizando o to_not, temos o método failure_message_when_negated que fun- ciona exatamente como failure_message, onde apenas definimos uma mensagem que faça sentido em caso de negação.
+
+```ruby
+RSpec::Matchers.define :valida_presenca_de_string do |attr|
+  match do |sujeito|
+    verifica_vazio?(sujeito, attr) &&
+    verifica_preenchido?(sujeito, attr)
+  end
+  failure_message do |sujeito|
+    "esperava-se que #{sujeito} tivesse validação em #{attr}"
+  end
+
+  failure_message_when_negated do |sujeito|
+    "esperava-se que #{sujeito} não tivesse validação em #{attr}"
+  end
+end
+
+def verifica_vazio?(sujeito, attr)
+  instancia = sujeito.new
+  instancia.valid?
+  instancia.errors[attr].include?(’não pode ficar em branco’)
+end
+
+def verifica_preenchido?(sujeito, attr)
+  params = {}
+  params[attr] = ’Charizard’
+  instancia = sujeito.new(params)
+  instancia.valid?
+  instancia.errors[attr].empty?
+end
+
+
+
+
+
+### Use in specs
+it { expect(Pokemon).to valida_presenca_de_string(:nome) }
+```
+
+
+###### Should-matchers
+
+```ruby
+
+it { should validate_numericality_of(:id_nacional).only_integer
+        .is_greater_than(0) }
+
+
+# Model 
+
+class Pokemon < ActiveRecord::Base
+  validates :nome, :id_nacional, presence: true
+  validates :id_nacional, numericality: {
+    only_integer: true, greater_than: 0 }
+end
+```
+
+Matchers
+
+
+• email-spec:comoonomejádiz,ajuda-nosatestarose-mailsdoActi- onMailer (Email Spec)[https://github.com/bmabey/email-spec].
+• rspec-sidekiq: para quando estamos utilizando o Sidekiq (ferramenta de background job) (Rspec Sidekiq)[https://github.com/philostler/rspec-sidekiq].
