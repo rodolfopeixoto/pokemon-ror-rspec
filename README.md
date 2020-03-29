@@ -76,7 +76,7 @@ Dependent Attributes
 
 exibindo informações do titulo e do aprovado. Para isso, passamos um bloco, afinal será um atributo lazy. Den- tro deste bloco temos acesso aos outros atributos do model.
 
-```
+```ruby
 factory :artigo do
   titulo ’Diversas dicas do RSpec’
   conteudo
@@ -86,7 +86,7 @@ end
 
 #### Associations
 
-``` 
+```ruby
 factory :artigo do
   titulo ’Diversas dicas do RSpec’
     conteudo { "Conteudo do #{titulo}" }
@@ -673,13 +673,13 @@ Temos estas duas escolas: a clássica e a de mocks. Pessoalmente, eu uti- lizo a
   gem ’pry-rails’
 ```
 
-```
+```ruby
 #file .pryrc no nosso diretório home e adicionamos as se- guintes linhas:
 require "awesome_print"
 AwesomePrint.pry
 ```
 
-```
+```ruby
 ## Console Pry
 # lista todos os métodos da class
 ls Net::HTTP
