@@ -5,8 +5,8 @@
 
 #### URI dinâmica
 
-Deste modo, não estamos nos importando com o método HTTP e a URI da requisição. Apenas estamos enviando o mesmo body sempre, ou seja, a imagem.
-Assim conseguimos fazer com que nossos testes continuem passando, e não precisamos testar novamente o Paperclip no teste do controller. Somente precisamos verificar que ele não nos gera problemas devido a URIs não de- terminísticas.
+Deste modo, não estamos nos importando com o método HTTP e a URI da requisição. Apenas estamos enviando o mesmo body sempre, ou seja, a imagem.
+Assim conseguimos fazer com que nossos testes continuem passando, e não precisamos testar novamente o Paperclip no teste do controller. Somente precisamos verificar que ele não nos gera problemas devido a URIs não de- terminísticas.
 
 
 ```ruby
@@ -42,7 +42,7 @@ Utilização das traits com o uso de todos os campos de traits
 ```ruby
 factory :artigo do
   titulo ’Diversas dicas do RSpec’
-  conteudo ’Contenteúdo de Diversas dicas do RSpec’
+  conteudo ’Contenteúdo de Diversas dicas do RSpec’
 trait :aprovado doaprovado true
   end
   trait :nao_aprovado do
@@ -67,14 +67,14 @@ Lazy Attributes
 
 factory :artigo do
   titulo ’Diversas dicas do RSpec’
-  conteudo ’Contenteúdo de Diversas dicas do RSpec’
+  conteudo ’Contenteúdo de Diversas dicas do RSpec’
   created_at { 2.days.ago }
 end
 ```
 
 Dependent Attributes
 
-exibindo informações do titulo e do aprovado. Para isso, passamos um bloco, afinal será um atributo lazy. Den- tro deste bloco temos acesso aos outros atributos do model.
+exibindo informações do titulo e do aprovado. Para isso, passamos um bloco, afinal será um atributo lazy. Den- tro deste bloco temos acesso aos outros atributos do model.
 
 ```
 factory :artigo do
@@ -128,7 +128,7 @@ association :autor, factory: :usuarios, nome: ’Mauro George’
 #### Aliases
 
 
-No exemplo anterior, utilizamos o método association para definir a factory da associação. Não podemos nos referenciar a autor diretamente, dado que nossa factory está declarada como usuario.
+No exemplo anterior, utilizamos o método association para definir a factory da associação. Não podemos nos referenciar a autor diretamente, dado que nossa factory está declarada como usuario.
 Podemos declarar um alias para nossa factory de Usuario ,assim po- deremos utilizar autor diretamente. Para isso, simplesmente passamos um array para a chave aliases.
 
 ```ruby
@@ -139,7 +139,7 @@ end
 
 ```
 
-Dessa forma, além de podermos como ``FactoryGirl.create(:usuario), FactoryGirl.create(:autor)`.
+Dessa forma, além de podermos como ``FactoryGirl.create(:usuario), FactoryGirl.create(:autor)`.
 
 ```ruby
 factory :artigo do
@@ -169,7 +169,7 @@ factory :usuario, aliases: [:autor] do
 end
 ```
 
-O problema é que todo autor terá apenas um artigo criado. Seria bom se conseguíssemos aumentar este número.
+O problema é que todo autor terá apenas um artigo criado. Seria bom se conseguíssemos aumentar este número.
 
 
 #### create_list
@@ -195,8 +195,8 @@ end
 #### Transient Attributes
 
 
-A factory_girl nos dá a opção de definirmos atributos que não estão em nosso model. Para isso, utilizamos um bloco no método ignore e, se utili- zarmos estes atributos em conjunto com o callback, conseguiremos definir a quantidade de artigos que queremos criar dinamicamente.
-Para isso, passamos para o bloco ignore o nosso transient attribute, o total_de_artigos e definimos o valor 3. Passamos para o nosso bloco do after(:create) um novo parâmetro, o evaluator, que armazena todos os valores da factory, inclusive os ignorados. Assim, passamos o valor de total_de_artigos para o create_list.
+A factory_girl nos dá a opção de definirmos atributos que não estão em nosso model. Para isso, utilizamos um bloco no método ignore e, se utili- zarmos estes atributos em conjunto com o callback, conseguiremos definir a quantidade de artigos que queremos criar dinamicamente.
+Para isso, passamos para o bloco ignore o nosso transient attribute, o total_de_artigos e definimos o valor 3. Passamos para o nosso bloco do after(:create) um novo parâmetro, o evaluator, que armazena todos os valores da factory, inclusive os ignorados. Assim, passamos o valor de total_de_artigos para o create_list.
 
 ```ruby
 factory :usuario, aliases: [:autor] do
@@ -212,7 +212,7 @@ factory :usuario, aliases: [:autor] do
   end
 end
 ```
-Podemos agora criar usuários com a quantidade de artigos que desejar- mos da seguinte maneira:
+Podemos agora criar usuários com a quantidade de artigos que desejar- mos da seguinte maneira:
 
 ```ruby
 FactoryGirl.create(:usuarios, :com_artigo, total_de_artigos: 10)
@@ -238,30 +238,30 @@ end
 
 ```
 
-Agora sim nossa factory está funcionando! E retornando o nosso JSON.
+Agora sim nossa factory está funcionando! E retornando o nosso JSON.
 
 `FactoryGirl.create(:pokeapi)`
 
 #### Use build 
 
-Uma das estratégias da factory_girl é o build. Diferentemente do create, o build apenas cria o objeto Active Record não o persistindo no banco de dados. Vamos ver um exemplo.
+Uma das estratégias da factory_girl é o build. Diferentemente do create, o build apenas cria o objeto Active Record não o persistindo no banco de dados. Vamos ver um exemplo.
 
 ```ruby
 pokemon = FactoryGirl.build(:pokemon)
 ```
 
-Podemos ver se nosso objeto está salvo ou não simplesmente usando o
+Podemos ver se nosso objeto está salvo ou não simplesmente usando o
 
-método persisted? do Active Record. pokemon.persisted?
+método persisted? do Active Record. pokemon.persisted?
 
-No nosso caso, é retornado false. Podemos pensar que o build da factory_girl seria o mesmo que utilizarmos o new do Active Record, passando os atributos definidos na factory.
+No nosso caso, é retornado false. Podemos pensar que o build da factory_girl seria o mesmo que utilizarmos o new do Active Record, passando os atributos definidos na factory.
 
 #### build_stubbed
 
-build_stubbed, o irmão mais poderoso do build
+build_stubbed, o irmão mais poderoso do build
 
-Uma outra estratégia disponibilizada pela factory_bot é o build_stubbed. Diferente do build, não estamos criando um objeto
-Active Record real, mas sim fazendo stub de seus métodos. Em consequência, esta estratégia é a mais rápida de todas. Vamos a um exemplo.
+Uma outra estratégia disponibilizada pela factory_bot é o build_stubbed. Diferente do build, não estamos criando um objeto
+Active Record real, mas sim fazendo stub de seus métodos. Em consequência, esta estratégia é a mais rápida de todas. Vamos a um exemplo.
 
 ```ruby
 pokemon = FactoryGirl.build_stubbed(:pokemon)
@@ -270,10 +270,10 @@ pokemon = FactoryGirl.build_stubbed(:pokemon)
 
 
 Diferentemente do build, nosso objeto age como estivesse persistido, por isso, ao usarmos pokemon.persisted?,
-nosso resultado será true. Nosso objeto somente age como se estivesse persistido, pois se fizermos um Pokemon.count
+nosso resultado será true. Nosso objeto somente age como se estivesse persistido, pois se fizermos um Pokemon.count
 antes e depois do uso do build_stubbed obteremos o mesmo valor,
 mesmo que explicitamente salvemos nosso objeto com #save!.
-Com o build, realmente o objeto é salvo no banco de dados se usarmos #save!.
+Com o build, realmente o objeto é salvo no banco de dados se usarmos #save!.
 
 
 #### FactoryGirl.lint
@@ -288,7 +288,7 @@ RSpec.configure do |config|
 end
 ```
 
-##### Ordem aleatória nos testes
+##### Ordem aleatória nos testes
 
 ```ruby
 config.order = "random"
@@ -309,8 +309,8 @@ rspec spec --seed 182
 
 #### Utilizar timecop ou ActiveSupport::Testing::TimeHelpers
 
-A partir do Rails 4.1, foi criado o módulo ActiveSupport::Testing::TimeHelpers, que nos oferece méto- dos para viajarmos no tempo assim como com o timecop.
-Como estamos utilizando o RSpec, primeiro temos que incluir o módulo. Para isso, utilizamos o spec_helper.rb.
+A partir do Rails 4.1, foi criado o módulo ActiveSupport::Testing::TimeHelpers, que nos oferece méto- dos para viajarmos no tempo assim como com o timecop.
+Como estamos utilizando o RSpec, primeiro temos que incluir o módulo. Para isso, utilizamos o spec_helper.rb.
  
 ```ruby
 RSpec.configure do |config|
@@ -320,7 +320,7 @@ end
 
 ```
 
-Com o módulo inserido simplesmente trocamos de `Timecop.freeze` para `travel_to` e de `Timecop.return` para `travel_back`, e mantemos o mesmo comportamento do timecop. No entanto, agora não há necessidade de uma gem extra.
+Com o módulo inserido simplesmente trocamos de `Timecop.freeze` para `travel_to` e de `Timecop.return` para `travel_back`, e mantemos o mesmo comportamento do timecop. No entanto, agora não há necessidade de uma gem extra.
 
 ```ruby
   before do
@@ -330,8 +330,8 @@ Com o módulo inserido simplesmente trocamos de `Timecop.freeze` para `travel_t
     travel_back
   end
 ```
-Assim como o Timecop.freeze, o travel_to também aceita um bloco, de forma que não é necessário usar o travel_back. No entanto, não se esqueça de sempre usar o travel_back se não estiver usando um bloco, como no nosso exemplo, para evitarmos o problema de testes quebradiços que vimos anteriormente.
-Mas e o timecop ainda faz sentido? Sim! Em projetos que não são Rails ou que não utilizem o ActiveSupport. A dica é: se tiver em uma app Rails, ou se seu projeto tiver o ActiveSupport, utilize o travel_to; nos demais casos utilize o timecop.
+Assim como o Timecop.freeze, o travel_to também aceita um bloco, de forma que não é necessário usar o travel_back. No entanto, não se esqueça de sempre usar o travel_back se não estiver usando um bloco, como no nosso exemplo, para evitarmos o problema de testes quebradiços que vimos anteriormente.
+Mas e o timecop ainda faz sentido? Sim! Em projetos que não são Rails ou que não utilizem o ActiveSupport. A dica é: se tiver em uma app Rails, ou se seu projeto tiver o ActiveSupport, utilize o travel_to; nos demais casos utilize o timecop.
 
 
 #### SimpleCov
@@ -341,7 +341,7 @@ require ’simplecov’
 SimpleCov.start ’rails’
 ```
 
-Por padrão, o SimpleCov é rodado todas as vezes que um teste é execu- tado, sempre exibindo este output durante o nosso TDD, o que é bastante chato, afinal não estamos preocupados com isso enquanto escrevemos nos- sos testes. Para isso, podemos definir que o SimpleCov será executado apenas se uma variável de ambiente estiver definida, vamos chamá-la de coverage e colocar o código do SimpleCov dentro de um if.
+Por padrão, o SimpleCov é rodado todas as vezes que um teste é execu- tado, sempre exibindo este output durante o nosso TDD, o que é bastante chato, afinal não estamos preocupados com isso enquanto escrevemos nos- sos testes. Para isso, podemos definir que o SimpleCov será executado apenas se uma variável de ambiente estiver definida, vamos chamá-la de coverage e colocar o código do SimpleCov dentro de um if.
 
 ```ruby
 if ENV[’coverage’] == ’on’
@@ -352,28 +352,28 @@ if ENV[’coverage’] == ’on’
 end
 
 ```
-Deste modo, ao rodarmos nossos testes, não teremos a saída do Sim- pleCov apenas se definirmos isso explicitamente utilizando $coverage=on rspec spec.
+Deste modo, ao rodarmos nossos testes, não teremos a saída do Sim- pleCov apenas se definirmos isso explicitamente utilizando $coverage=on rspec spec.
 
 
 #### Stub
 
-Vamos agora às dicas de quando utilizar stub.
-• Quando o resultado de um dos seus colaboradores não é determinís- tico;
+Vamos agora às dicas de quando utilizar stub.
+• Quando o resultado de um dos seus colaboradores não é determinís- tico;
 • Apenasemcolaboradores,nuncanoobjeto(osujeito),doseuteste;
-• Quandoocolaboradorfazumaoperaçãolenta,comoacessarumaAPI.
+• Quandoocolaboradorfazumaoperaçãolenta,comoacessarumaAPI.
 
 ```ruby
-it ’é um valor aleatório’ do
+it ’é um valor aleatório’ do
   allow(random).to receive(:rand).with(60..80).and_return(75)
   pokemon = pokemon.new
   expect(pokemon.ataque_critico).to eq(75)
 end
 ```
 
-#### dublês
+#### dublês
 
 
-Agora temos o nosso cenário montado. Temos o colaborador, que é o objeto, e o nosso sujeito, o CardPresenter, que consegue fazer sua as- serção. Vamos agora escrever a nossa classe CardPresenter.
+Agora temos o nosso cenário montado. Temos o colaborador, que é o objeto, e o nosso sujeito, o CardPresenter, que consegue fazer sua as- serção. Vamos agora escrever a nossa classe CardPresenter.
 
 ```ruby
 
@@ -430,17 +430,17 @@ end
 
 #### Duplications with Shared Exemple
 
-Por con- venção, os shared examples são armazenados em spec/support/ e possuem o prefixo shared_examples_for_. Criaremos o nosso spec/support/shared_examples_for_validacao.rb.
-Para criar- mos um shared example, utilizaremos o método shared_examples, que recebe como primeiro parâmetro o nome do nosso shared example e um bloco com o conteúdo do exemplo compartilhado.
+Por con- venção, os shared examples são armazenados em spec/support/ e possuem o prefixo shared_examples_for_. Criaremos o nosso spec/support/shared_examples_for_validacao.rb.
+Para criar- mos um shared example, utilizaremos o método shared_examples, que recebe como primeiro parâmetro o nome do nosso shared example e um bloco com o conteúdo do exemplo compartilhado.
 
 ```ruby
 shared_examples ’valida presenca de string’ do
   describe ’#nome’ do
-    it ’possui erro quando está vazio’ do
+    it ’possui erro quando está vazio’ do
      pokemon = Pokemon.new
      pokemon.valid?
      expect(pokemon.errors[:nome]).
-        to include(’não pode ficar em branco’)
+        to include(’não pode ficar em branco’)
     end
     # ...
   end 
@@ -450,31 +450,31 @@ end
 utilizamos o include_examples passando o nome do shared example.
 
 ```ruby
-describe ’validações’ do
+describe ’validações’ do
   include_examples ’valida presenca de string’
 end
 ```
 
-##### Shared examples dinâmicos
-O shared example aceita parâmetros, sendo assim, temos que passar como parâmetro a classe e um símbolo com o nome do campo do model cuja pre- sença queremos testar. Alteramos o nosso shared example para agora utili- zar o atributo que foi passado por parâmetro. Além disso, instanciamos uma classe de acordo com a que foi passada por parâmetro e assim realizamos nossa validação de presença.
+##### Shared examples dinâmicos
+O shared example aceita parâmetros, sendo assim, temos que passar como parâmetro a classe e um símbolo com o nome do campo do model cuja pre- sença queremos testar. Alteramos o nosso shared example para agora utili- zar o atributo que foi passado por parâmetro. Além disso, instanciamos uma classe de acordo com a que foi passada por parâmetro e assim realizamos nossa validação de presença.
 
 ```ruby
 shared_examples ’valida presenca de string’ do |klass, attr|
   describe "#{attr}" do
-    it ’possui erro quando está vazio’ do
+    it ’possui erro quando está vazio’ do
       instancia = klass.new
       instancia.valid?
       expect(instancia.errors[attr]).
-          to include(’não pode ficar em branco’)
+          to include(’não pode ficar em branco’)
     end
   end 
 end
 ```
 
- Depois de executarmos as valida- ções da nossa classe, verificamos se o atributo passado não possui nenhum erro.
+ Depois de executarmos as valida- ções da nossa classe, verificamos se o atributo passado não possui nenhum erro.
 
 ```ruby
-it ’não possui erro quando está preenchido’ do
+it ’não possui erro quando está preenchido’ do
   params = {}
   params[attr] = ’Charizard’
   instancia = klass.new(params)
@@ -484,10 +484,10 @@ end
 ```
 
 
-definimos o nosso shared example de uma maneira dinâmica temos que alterar o nosso teste para passar os parâmetros corretos. Simples- mente passamos a nossa classe Pokemon e um símbolo :nome, que é o valor que queremos testar.
+definimos o nosso shared example de uma maneira dinâmica temos que alterar o nosso teste para passar os parâmetros corretos. Simples- mente passamos a nossa classe Pokemon e um símbolo :nome, que é o valor que queremos testar.
 
 ```ruby
-describe ’validações’ do
+describe ’validações’ do
   include_examples ’valida presenca de string’, Pokemon, :nome
 end
 ```
@@ -495,11 +495,11 @@ end
 
 #### Create Matchers RSpec
 
-o método failure_message, que recebe um bloco em que passamos o nosso sujeito e mostramos uma mensagem customizada.
+o método failure_message, que recebe um bloco em que passamos o nosso sujeito e mostramos uma mensagem customizada.
 
 
- to_not, porém, ficaria estranha a saída se ti- véssemos a mesma mensagem que definimos no failure_message, afinal estamos fazendo o oposto agora.
-Para definirmos a mensagem para quando estivermos utilizando o to_not, temos o método failure_message_when_negated que fun- ciona exatamente como failure_message, onde apenas definimos uma mensagem que faça sentido em caso de negação.
+ to_not, porém, ficaria estranha a saída se ti- véssemos a mesma mensagem que definimos no failure_message, afinal estamos fazendo o oposto agora.
+Para definirmos a mensagem para quando estivermos utilizando o to_not, temos o método failure_message_when_negated que fun- ciona exatamente como failure_message, onde apenas definimos uma mensagem que faça sentido em caso de negação.
 
 ```ruby
 RSpec::Matchers.define :valida_presenca_de_string do |attr|
@@ -508,18 +508,18 @@ RSpec::Matchers.define :valida_presenca_de_string do |attr|
     verifica_preenchido?(sujeito, attr)
   end
   failure_message do |sujeito|
-    "esperava-se que #{sujeito} tivesse validação em #{attr}"
+    "esperava-se que #{sujeito} tivesse validação em #{attr}"
   end
 
   failure_message_when_negated do |sujeito|
-    "esperava-se que #{sujeito} não tivesse validação em #{attr}"
+    "esperava-se que #{sujeito} não tivesse validação em #{attr}"
   end
 end
 
 def verifica_vazio?(sujeito, attr)
   instancia = sujeito.new
   instancia.valid?
-  instancia.errors[attr].include?(’não pode ficar em branco’)
+  instancia.errors[attr].include?(’não pode ficar em branco’)
 end
 
 def verifica_preenchido?(sujeito, attr)
@@ -559,7 +559,7 @@ end
 Matchers
 
 
-• email-spec:comoonomejádiz,ajuda-nosatestarose-mailsdoActi- onMailer (Email Spec)[https://github.com/bmabey/email-spec].
+• email-spec:comoonomejádiz,ajuda-nosatestarose-mailsdoActi- onMailer (Email Spec)[https://github.com/bmabey/email-spec].
 • rspec-sidekiq: para quando estamos utilizando o Sidekiq (ferramenta de background job) (Rspec Sidekiq)[https://github.com/philostler/rspec-sidekiq].
 
 ###### Double align
@@ -581,7 +581,7 @@ def update
 end
 ```
 
-Trocando o nosso double por instance_double para garantir que a classe de que estamos fazendo asserção aqui realmente implementa o método que estamos testando.
+Trocando o nosso double por instance_double para garantir que a classe de que estamos fazendo asserção aqui realmente implementa o método que estamos testando.
 
 ###### message expectations
 
@@ -595,7 +595,7 @@ it ’atualiza o Pokemon’ do
 end
 ```
 
-o padrão setup, exercício, verificação e teardown, temos o setup, verificação, exercício e teardown.
+o padrão setup, exercício, verificação e teardown, temos o setup, verificação, exercício e teardown.
 
 Para métodos encadeados como `Pokemon.aprovados.recem_criados`
 
@@ -614,8 +614,8 @@ Caso precise de parametros use:
    expect(atualizador_pokemon).to receive(:update!)
 ```
 
-User Agent enviado no header. A API continua funcionando sem o header; ele é necessário apenas para vermos estatísticas de uso. Vamos fazer um teste para enviar o User Agent.
-Vamos começar com o nosso teste fazendo uma expectativa de que o Net::HTTP recebe os parâmetros corretos no header.
+User Agent enviado no header. A API continua funcionando sem o header; ele é necessário apenas para vermos estatísticas de uso. Vamos fazer um teste para enviar o User Agent.
+Vamos começar com o nosso teste fazendo uma expectativa de que o Net::HTTP recebe os parâmetros corretos no header.
 
 ```ruby
 it ’envia o user agent’ do
@@ -631,48 +631,50 @@ resposta.strip
 
 Problemas:
 
-`undefined method 'strip'for nil:NilClass`
-
+```ruby
+undefined method 'strip'for nil:NilClass
 ```
+
+```ruby
 resposta = double(’resposta HTTP’)
 expect(Net::HTTP).to receive(:get).with(anything,
   { ’User-Agent’ => ’RSpec’ }).and_return(resposta)
 
 ```
 
-```
+```ruby
 resposta = double(’resposta HTTP’).as_null_object
 expect(Net::HTTP).to receive(:get).with(anything,
     { ’User-Agent’ => ’RSpec’ }).and_return(resposta)
 ```
 
 
-and_call_original, que realiza a chamada do método retornando o seu valor. Assim podemos remover o uso do dublê.
+and_call_original, que realiza a chamada do método retornando o seu valor. Assim podemos remover o uso do dublê.
 
 
-```
+```ruby
 expect(Net::HTTP).to receive(:get).with(anything,
     { ’User-Agent’ => ’RSpec’ }).and_call_original
 ```
 
 
-A dica é: inicie com um simples valor como retorno, e caso encontre pro- blemas utilize do dublê como null object; caso o método testado não seja cus- toso de ser executado, utilize o and_call_original.
+A dica é: inicie com um simples valor como retorno, e caso encontre pro- blemas utilize do dublê como null object; caso o método testado não seja cus- toso de ser executado, utilize o and_call_original.
 
 
 OBS:
 
-Lembre-se de que é mais complicado para um iniciante entender testes utilizando de mocks do que a abordagem clássica, então pense no seu time antes de começar a utilizar esta abordagem. Veja se todos estão confortáveis e utilize-a apenas quando for necessária.
-Temos estas duas escolas: a clássica e a de mocks. Pessoalmente, eu uti- lizo a abordagem clássica com um pouquinho de mock. Utilizo mocks basi- camente quando algum colaborador meu, criado por mim, necessita ser exe- cutado, como, no nosso exemplo, o AtualizadorPokemon em message ex- pectations. Isso porque a abordagem clássica me dá maior confiança.
+Lembre-se de que é mais complicado para um iniciante entender testes utilizando de mocks do que a abordagem clássica, então pense no seu time antes de começar a utilizar esta abordagem. Veja se todos estão confortáveis e utilize-a apenas quando for necessária.
+Temos estas duas escolas: a clássica e a de mocks. Pessoalmente, eu uti- lizo a abordagem clássica com um pouquinho de mock. Utilizo mocks basi- camente quando algum colaborador meu, criado por mim, necessita ser exe- cutado, como, no nosso exemplo, o AtualizadorPokemon em message ex- pectations. Isso porque a abordagem clássica me dá maior confiança.
 
 
 #### Gems debugger
-```
+```ruby
   gem ’awesome_print’
   gem ’pry-rails’
 ```
 
 ```
-#file .pryrc no nosso diretório home e adicionamos as se- guintes linhas:
+#file .pryrc no nosso diretório home e adicionamos as se- guintes linhas:
 require "awesome_print"
 AwesomePrint.pry
 ```
@@ -706,10 +708,10 @@ play
 
 Gems para debugger
 
-• pry-rescue: abre o Pry sempre que uma excessão é lançada, https:// github.com/ConradIrwin/pry-rescue.
+• pry-rescue: abre o Pry sempre que uma excessão é lançada, https:// github.com/ConradIrwin/pry-rescue.
 • pry-stack_explorer: permite navegar pelo stack, https://github.com/ pry/pry-stack_explorer.
 • pry-debugger: adiciona mais comandos de debug ao Pry e a possibilidade de adicionar breakpoints, https://github.com/nixme/ pry-debugger.
-• pry-plus: coleção de ferramentas para aumentar os poderes do Pry, https://github.com/rking/pr y- plus.
-• jazz_hands:outracoleçãodeferramentasqueincluiopry-railseAwe- some Print, https://github.com/nixme/jazz_hands.
+• pry-plus: coleção de ferramentas para aumentar os poderes do Pry, https://github.com/rking/pr y- plus.
+• jazz_hands:outracoleçãodeferramentasqueincluiopry-railseAwe- some Print, https://github.com/nixme/jazz_hands.
 
 
