@@ -561,3 +561,155 @@ Matchers
 
 • email-spec:comoonomejádiz,ajuda-nosatestarose-mailsdoActi- onMailer (Email Spec)[https://github.com/bmabey/email-spec].
 • rspec-sidekiq: para quando estamos utilizando o Sidekiq (ferramenta de background job) (Rspec Sidekiq)[https://github.com/philostler/rspec-sidekiq].
+
+###### Double align
+
+```ruby
+it ’atualiza o Pokemon’ do
+  atualizador_pokemon = double(AtualizadorPokemon)
+  expect(AtualizadorPokemon).to receive(:new).with(pokemon)
+    .and_return(atualizador_pokemon)
+  expect(atualizador_pokemon).to receive(:update!)
+   put :update, id: pokemon
+end
+
+# controller
+def update
+  pokemon = Pokemon.find(params[:id])
+  AtualizadorPokemon.new(pokemon).update!
+  redirect_to pokemons_path
+end
+```
+
+Trocando o nosso double por instance_double para garantir que a classe de que estamos fazendo asserção aqui realmente implementa o método que estamos testando.
+
+###### message expectations
+
+```ruby
+it ’atualiza o Pokemon’ do
+  atualizador_pokemon = instance_double(AtualizadorPokemon)
+  expect(AtualizadorPokemon).to receive(:new).with(pokemon)
+    .and_return(atualizador_pokemon)
+  expect(atualizador_pokemon).to receive(:update!)
+  put :update, id: pokemon
+end
+```
+
+o padrão setup, exercício, verificação e teardown, temos o setup, verificação, exercício e teardown.
+
+Para métodos encadeados como `Pokemon.aprovados.recem_criados`
+
+```ruby
+allow(Pokemon).
+  to receive_message_chain(:aprovados, :recem_criados).
+  and_return([])
+```
+
+Caso precise de parametros use:
+
+```ruby
+   atualizador_pokemon = instance_double(AtualizadorPokemon)
+   expect(AtualizadorPokemon).to receive(:new).with(pokemon)
+     .and_return(atualizador_pokemon)
+   expect(atualizador_pokemon).to receive(:update!)
+```
+
+User Agent enviado no header. A API continua funcionando sem o header; ele é necessário apenas para vermos estatísticas de uso. Vamos fazer um teste para enviar o User Agent.
+Vamos começar com o nosso teste fazendo uma expectativa de que o Net::HTTP recebe os parâmetros corretos no header.
+
+```ruby
+it ’envia o user agent’ do
+  expect(Net::HTTP).to receive(:get).with(anything,
+      { ’User-Agent’ => ’RSpec’ })
+  acessa_api
+end
+
+# code
+resposta = Net::HTTP.get(endpoint, { ’User-Agent’ => ’RSpec’ })
+resposta.strip
+```
+
+Problemas:
+
+`undefined method 'strip'for nil:NilClass`
+
+```
+resposta = double(’resposta HTTP’)
+expect(Net::HTTP).to receive(:get).with(anything,
+  { ’User-Agent’ => ’RSpec’ }).and_return(resposta)
+
+```
+
+```
+resposta = double(’resposta HTTP’).as_null_object
+expect(Net::HTTP).to receive(:get).with(anything,
+    { ’User-Agent’ => ’RSpec’ }).and_return(resposta)
+```
+
+
+and_call_original, que realiza a chamada do método retornando o seu valor. Assim podemos remover o uso do dublê.
+
+
+```
+expect(Net::HTTP).to receive(:get).with(anything,
+    { ’User-Agent’ => ’RSpec’ }).and_call_original
+```
+
+
+A dica é: inicie com um simples valor como retorno, e caso encontre pro- blemas utilize do dublê como null object; caso o método testado não seja cus- toso de ser executado, utilize o and_call_original.
+
+
+OBS:
+
+Lembre-se de que é mais complicado para um iniciante entender testes utilizando de mocks do que a abordagem clássica, então pense no seu time antes de começar a utilizar esta abordagem. Veja se todos estão confortáveis e utilize-a apenas quando for necessária.
+Temos estas duas escolas: a clássica e a de mocks. Pessoalmente, eu uti- lizo a abordagem clássica com um pouquinho de mock. Utilizo mocks basi- camente quando algum colaborador meu, criado por mim, necessita ser exe- cutado, como, no nosso exemplo, o AtualizadorPokemon em message ex- pectations. Isso porque a abordagem clássica me dá maior confiança.
+
+
+#### Gems debugger
+```
+  gem ’awesome_print’
+  gem ’pry-rails’
+```
+
+```
+#file .pryrc no nosso diretório home e adicionamos as se- guintes linhas:
+require "awesome_print"
+AwesomePrint.pry
+```
+
+```
+## Console Pry
+# lista todos os métodos da class
+ls Net::HTTP
+
+# Ler a documentação de como utilizar determinado método
+
+? Net::HTTP#get
+
+# show-doc = ? para verificar a documentação
+
+# para verificar implementação show-source = $
+$ Net::HTTP#get
+
+#Para executar as duas linhas e verificar os resultados
+
+play -l 22..23
+
+# Volta para onde estavamos no binding.pry
+whereami
+
+# cd para entrar e utilizarmos os métodos sem digitar @info.play
+cd @info
+play 
+# retorna os dados
+```
+
+Gems para debugger
+
+• pry-rescue: abre o Pry sempre que uma excessão é lançada, https:// github.com/ConradIrwin/pry-rescue.
+• pry-stack_explorer: permite navegar pelo stack, https://github.com/ pry/pry-stack_explorer.
+• pry-debugger: adiciona mais comandos de debug ao Pry e a possibilidade de adicionar breakpoints, https://github.com/nixme/ pry-debugger.
+• pry-plus: coleção de ferramentas para aumentar os poderes do Pry, https://github.com/rking/pr y- plus.
+• jazz_hands:outracoleçãodeferramentasqueincluiopry-railseAwe- some Print, https://github.com/nixme/jazz_hands.
+
+
