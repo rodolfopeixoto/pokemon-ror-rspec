@@ -709,9 +709,13 @@ play
 Gems para debugger
 
 • pry-rescue: abre o Pry sempre que uma excessão é lançada, https:// github.com/ConradIrwin/pry-rescue.
+
 • pry-stack_explorer: permite navegar pelo stack, https://github.com/ pry/pry-stack_explorer.
+
 • pry-debugger: adiciona mais comandos de debug ao Pry e a possibilidade de adicionar breakpoints, https://github.com/nixme/ pry-debugger.
+
 • pry-plus: coleção de ferramentas para aumentar os poderes do Pry, https://github.com/rking/pr y- plus.
+
 • jazz_hands:outracoleçãodeferramentasqueincluiopry-railseAwe- some Print, https://github.com/nixme/jazz_hands.
 
 
