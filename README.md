@@ -706,6 +706,17 @@ play
 # retorna os dados
 ```
 
+#### COMANDS
+
+```
+rails s -b $IP -p $PORT
+
+```
+Visualizar a quantidade de arquivos e cobertura
+```
+rails stats
+```
+
 Gems para debugger
 
 • pry-rescue: abre o Pry sempre que uma excessão é lançada, https:// github.com/ConradIrwin/pry-rescue.
